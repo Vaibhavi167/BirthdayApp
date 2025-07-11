@@ -41,7 +41,26 @@ struct ContentView: View
                 {
                     Text("New Birthday")
                         .font(.headline)
+                    DatePicker(selection: $newBirthday, in: Date.distantPast...Date.now, displayedComponents: .date)
+                    {
+                        TextField("Name", text: $newName)
+                            .textFieldStyle(.roundedBorder)
+                            .padding(.horizontal)
+                        
+                    }
+                    
+                    Button("Save")
+                    {
+                        let newFriend = Friend(name: newName, birthday: newBirthday)
+                        friends.append(newFriend)
+                        newName = ""
+                        newBirthday = .now
+                        
+                    }
+                    .bold()
                 }
+                .padding()
+                .background(.bar)
             }
         }
     }
