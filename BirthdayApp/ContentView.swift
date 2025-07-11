@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ContentView: View
 {
@@ -15,14 +16,21 @@ struct ContentView: View
     @State private var newBirthday = Date.now
     
     //friends array
-    @State private var friends: [Friend] = [Friend(name: "Vaibhavi", birthday: .now), Friend(name: "Sourish", birthday: .now)]
+    @Query private var friends: [Friend]
+    
+    /*.modelContainer modifier added to ContentView in the BirthdaysAppApp file inserts a modelContext into the SwiftUI environment, and that modelContext is accessible to all views under the container.
+     
+        Allows the model container (which holds the swiftData) to be accessible in all the views and all files?
+     */
+    @Environment(\.modelContext) private var context
+    
     
     var body: some View
     {
         
         NavigationStack
         {
-            List(friends, id: \.name)
+            List(friends)
             {
                 friend in
                 HStack
@@ -52,10 +60,9 @@ struct ContentView: View
                     Button("Save")
                     {
                         let newFriend = Friend(name: newName, birthday: newBirthday)
-                        friends.append(newFriend)
+                        context.insert(newFriend)
                         newName = ""
                         newBirthday = .now
-                        
                     }
                     .bold()
                 }
@@ -68,4 +75,5 @@ struct ContentView: View
 
 #Preview {
     ContentView()
+        .modelContainer(for: Friend.self, inMemory: true)
 }
